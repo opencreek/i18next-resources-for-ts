@@ -28,6 +28,14 @@ const nsB = {
     }
   }
 }
+const nsC = {
+  name: 'nsC',
+  path: '/some/path/locales/en/ns-B.json',
+  resources: {
+    k21_one: 'v21',
+    k21_other: 'v22'
+  }
+}
 
 const allMerged = { nsA: nsA.resources, 'ns-B': nsB.resources }
 
@@ -43,19 +51,27 @@ export default resources;
 `
 
 const mergedInterface = `interface Resources {
-  "nsA": {
-    "k1": "v1",
-    "k2": "v2",
-    "k3": {
-      "d3": "v3"
-    }
-  },
   "ns-B": {
     "k21": "v21",
     "k22": "v22",
     "k23": {
       "d23": "v23"
     }
+  },
+  "nsA": {
+    "k1": "v1",
+    "k2": "v2",
+    "k3": {
+      "d3": "v3"
+    }
+  }
+}
+
+export default Resources;
+`
+const mergedInterfaceWIthOptimization = `interface Resources {
+  "nsC": {
+    "k21": "v21" | "v22"
   }
 }
 
@@ -134,6 +150,12 @@ describe('mergeResourcesAsInterface', () => {
     const merged = mergeResourcesAsInterface([nsA, nsB])
     // console.log(merged)
     should(merged).eql(mergedInterface)
+  })
+
+  it('should generate a big interface file content from namespace resources with --optimize', async () => {
+    const merged = mergeResourcesAsInterface([nsC], { optimize: true })
+    // console.log(merged)
+    should(merged).eql(mergedInterfaceWIthOptimization)
   })
 })
 

@@ -13,8 +13,10 @@ function mergeResourcesAsInterface (namespaces, options = {}) {
   return interfaceFileContent
 }
 
+const oneIndentation = '  '
+
 function resourceToString (resources, indentation = 0) {
-  const intend = '\t'.repeat(indentation)
+  const intend = oneIndentation.repeat(indentation)
   if (typeof resources === 'string') return `"${resources.replace(/"/g, '\\"')}"`
   if (Array.isArray(resources)) {
     return `[${resources.map(it => resourceToString(it)).join(', ')}]`
@@ -28,7 +30,7 @@ function resourceToString (resources, indentation = 0) {
       .map(([k, v]) => {
         return `"${k.replace(/"/g, '\\"')}": ${resourceToString(v, indentation + 1)}`
       })
-    return `{\n${entries.map(it => `${intend}\t${it}`).join(',\n')}\n${intend}}`
+    return `{\n${entries.map(it => `${intend}${oneIndentation}${it}`).join(',\n')}\n${intend}}`
   }
 }
 
